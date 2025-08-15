@@ -35,7 +35,6 @@ jobs:
           mkdir -p dist_dmg
           hdiutil detach /Volumes/TemporalDenoiser || true
           create-dmg \
-          --overwrite \
           --skip-jenkins \
           --volname "TemporalDenoiser" \
           --window-size 500 300 \
