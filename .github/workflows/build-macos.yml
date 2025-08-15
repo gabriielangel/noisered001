@@ -18,11 +18,12 @@ jobs:
         with:
           python-version: '3.11'
 
-      - name: Install dependencies
+     - name: Install dependencies
         run: |
           python -m pip install --upgrade pip
           pip install -r requirements.txt
-          pip install py2app create-dmg
+          pip install py2app
+          brew install create-dmg
 
       - name: Build .app
         run: |
@@ -39,6 +40,7 @@ jobs:
             --app-drop-link 250 150 \
             dist_dmg/TemporalDenoiser.dmg \
             dist
+
 
       - name: Upload DMG Artifact
         uses: actions/upload-artifact@v4
