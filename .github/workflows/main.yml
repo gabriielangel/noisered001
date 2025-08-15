@@ -33,6 +33,7 @@ jobs:
         run: |
           DMG_NAME="TemporalDenoiser_$(date +%s).dmg"
           mkdir -p dist_dmg
+          hdiutil detach /Volumes/TemporalDenoiser || true
           create-dmg \
           --volname "TemporalDenoiser" \
           --window-size 500 300 \
