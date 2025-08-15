@@ -1,0 +1,10 @@
+
+PySide6>=6.5
+numpy
+opencv-python
+imageio
+tqdm
+# Optional for CinemaDNG (install manually if you need DNG I/O):
+# rawpy
+# tifffile
+# exiftool  # CLI tool for metadata copy (install via brew)
