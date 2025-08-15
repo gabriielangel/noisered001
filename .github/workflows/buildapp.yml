@@ -28,3 +28,21 @@ jobs:
       - name: Build .app
         run: |
           python setup.py py2app
+
+      - name: Create DMG
+        run: |
+          mkdir dist_dmg
+          create-dmg \
+            --volname "TemporalDenoiser" \
+            --window-size 500 300 \
+            --icon-size 100 \
+            --app-drop-link 250 150 \
+            dist_dmg/TemporalDenoiser.dmg \
+            dist
+
+
+      - name: Upload DMG Artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: TemporalDenoiser.dmg
+          path: dist_dmg/TemporalDenoiser.dmg
