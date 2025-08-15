@@ -29,17 +29,17 @@ jobs:
         run: |
           python setup.py py2app
 
-      - name: Create DMG
-        run: |
-          mkdir dist_dmg
-          create-dmg \
-            --overwrite \
-            --volname "TemporalDenoiser" \
-            --window-size 500 300 \
-            --icon-size 100 \
-            --app-drop-link 250 150 \
-            dist_dmg/TemporalDenoiser.dmg \
-            dist
+     - name: Create DMG
+  run: |
+    DMG_NAME="TemporalDenoiser_$(date +%s).dmg"
+    mkdir -p dist_dmg
+    create-dmg \
+      --volname "TemporalDenoiser" \
+      --window-size 500 300 \
+      --icon-size 100 \
+      --app-drop-link 250 150 \
+      dist_dmg/$DMG_NAME \
+      dist
 
 
       - name: Upload DMG Artifact
