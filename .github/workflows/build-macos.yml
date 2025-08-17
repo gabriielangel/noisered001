@@ -42,8 +42,8 @@ jobs:
           hdiutil create -volname "TemporalDenoiser" -srcfolder dist/TemporalDenoiser.app \
             -ov -format UDZO "dist_dmg/TemporalDenoiser.dmg"
 
-      - name: Upload DMG artifact
-        uses: actions/upload-artifact@v3
+      - name: Upload DMG Artifact
+        uses: actions/upload-artifact@v4
         with:
-          name: TemporalDenoiser-dmg
+          name: TemporalDenoiser.dmg
           path: dist_dmg/*.dmg
