@@ -1,10 +1,10 @@
-name: Build macOS TemporalDenoiser App
+name: Build macOS App
 
 on:
   push:
-    tags:
-      - 'v*'
-  workflow_dispatch:
+    branches: [ "main" ]
+  pull_request:
+    branches: [ "main" ]
 
 jobs:
   build:
@@ -13,37 +13,30 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v4
 
-      - name: Set up Python
+      - name: Set up Python 3.10
         uses: actions/setup-python@v5
         with:
-          python-version: '3.11'
+          python-version: '3.10'
 
       - name: Install dependencies
         run: |
-          python -m pip install --upgrade pip
+          python -m pip install --upgrade pip wheel setuptools
           pip install -r requirements.txt
           pip install py2app
-          brew install create-dmg
 
-      - name: Build .app
+      - name: Build .app bundle
         run: |
           python setup.py py2app
 
-     - name: Create DMG
-  run: |
-    DMG_NAME="TemporalDenoiser_$(date +%s).dmg"
-    mkdir -p dist_dmg
-    create-dmg \
-      --volname "TemporalDenoiser" \
-      --window-size 500 300 \
-      --icon-size 100 \
-      --app-drop-link 250 150 \
-      dist_dmg/$DMG_NAME \
-      dist
+      - name: Create DMG
+        run: |
+          mkdir -p dist_dmg
+          hdiutil create -volname TemporalDenoiser \
+                         -srcfolder dist/TemporalDenoiser.app \
+                         -ov -format UDZO dist_dmg/TemporalDenoiser.dmg
 
-
-      - name: Upload DMG Artifact
+      - name: Upload DMG artifact
         uses: actions/upload-artifact@v4
         with:
-          name: TemporalDenoiser.dmg
-          path: dist_dmg/TemporalDenoiser.dmg
+          name: TemporalDenoiser-macOS
+          path: dist_dmg/*.dmg
