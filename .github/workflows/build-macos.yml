@@ -2,41 +2,48 @@ name: Build macOS App
 
 on:
   push:
-    branches: [ "main" ]
+    branches: [ main ]
   pull_request:
-    branches: [ "main" ]
+    branches: [ main ]
+  workflow_dispatch:
 
 jobs:
-  build:
+  build-macos:
     runs-on: macos-13
+
     steps:
       - name: Checkout repository
-        uses: actions/checkout@v4
+        uses: actions/checkout@v3
 
-      - name: Set up Python 3.10
-        uses: actions/setup-python@v5
+      - name: Set up Python
+        uses: actions/setup-python@v4
         with:
           python-version: '3.10'
 
       - name: Install dependencies
         run: |
-          python -m pip install --upgrade pip wheel setuptools
+          python -m pip install --upgrade pip setuptools wheel
           pip install -r requirements.txt
           pip install py2app
 
-      - name: Build .app bundle
+      - name: Build app with py2app
         run: |
-          python setup.py py2app
+          python setup.py py2app --skip-jenkins
+
+      - name: Cleanup unwanted packages
+        run: |
+          rm -rf "dist/TemporalDenoiser.app/Contents/Resources/lib/python3.10/pkg_resources"
+          rm -rf "dist/TemporalDenoiser.app/Contents/Resources/lib/python3.10/setuptools*"
+          rm -rf "dist/TemporalDenoiser.app/Contents/Resources/lib/python3.10/jaraco*"
 
       - name: Create DMG
         run: |
           mkdir -p dist_dmg
-          hdiutil create -volname TemporalDenoiser \
-                         -srcfolder dist/TemporalDenoiser.app \
-                         -ov -format UDZO dist_dmg/TemporalDenoiser.dmg
+          hdiutil create -volname "TemporalDenoiser" -srcfolder dist/TemporalDenoiser.app \
+            -ov -format UDZO "dist_dmg/TemporalDenoiser.dmg"
 
       - name: Upload DMG artifact
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v3
         with:
-          name: TemporalDenoiser-macOS
+          name: TemporalDenoiser-dmg
           path: dist_dmg/*.dmg
